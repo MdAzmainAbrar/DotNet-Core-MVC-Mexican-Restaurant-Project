@@ -26,4 +26,4 @@ The main goal of this project was to master:
 ## Getting Started
 1. **Clone the repo:**
    ```bash
-   git clone [https://github.com/MdAzmainAbrar/DotNet-Core-MVC-Mexican-Restaurant-Project]
+   https://github.com/MdAzmainAbrar/DotNet-Core-MVC-Mexican-Restaurant-Project
