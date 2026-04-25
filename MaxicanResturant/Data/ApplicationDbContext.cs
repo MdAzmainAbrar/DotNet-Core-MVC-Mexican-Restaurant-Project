@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaxicanResturant.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser> // what is the purpose of ApplicationUser here? Is it for authentication and user management? That's correct. ApplicationUser is a custom user class that inherits from IdentityUser, allowing you to extend the default user properties and functionality provided by ASP.NET Core Identity. By using ApplicationUser, you can add additional properties (like FirstName, LastName, etc.) to the user model, which can be useful for authentication and user management in your application. This is called "extending the IdentityUser" and it allows you to customize the user model to fit the specific needs of your application while still leveraging the built-in features of ASP.NET Core Identity. 
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
