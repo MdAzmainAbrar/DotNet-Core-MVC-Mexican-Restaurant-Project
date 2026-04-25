@@ -51,6 +51,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false) @* Renders the "Scripts" section from child views or pages, if defined. The 'required: false' parameter means the application won't throw an error if the child page doesn't have a "Scripts" section. *@
 </body>
 </html>

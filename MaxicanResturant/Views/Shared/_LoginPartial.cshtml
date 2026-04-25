@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager // Inject the SignInManager to check if the user is signed in and to manage user authentication. 
+@inject UserManager<ApplicationUser> UserManager // Inject the UserManager to manage user-related operations, such as retrieving user information. the difference between SignInManager and UserManager is that SignInManager is responsible for handling user sign-in and authentication processes, while UserManager is responsible for managing user-related operations, such as creating users, retrieving user information, and managing user roles and claims.
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
