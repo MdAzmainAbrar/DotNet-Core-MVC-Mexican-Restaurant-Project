@@ -1,24 +1,24 @@
-﻿@model IEnumerable<Product>
+﻿@model IEnumerable<Product> //why? Because the Index view is designed to display a list of products, it needs to receive an IEnumerable<Product> as its model. This allows the view to iterate over the collection of products and display each product's details (such as name, description, price, etc.) in a structured format, such as a table or a grid. By using IEnumerable<Product>, the view can handle any number of products, from zero to many, and render them accordingly.       
 
 @{
     ViewBag.Title = "Tequilas Menu Items ";
 }
 
-@functions {
+@functions { //the use of @functions in a Razor view allows you to define helper methods that can be used within the view to perform specific tasks or calculations. In this case, the GetDeleteModalId and GetModalId methods are defined to generate unique IDs for the delete confirmation modals based on the product's ID. This helps ensure that each modal has a unique identifier, which is important for correctly targeting the modals when they are triggered by the delete buttons. By using these helper methods, you can keep your Razor view clean and organized while still providing the necessary functionality for handling delete actions.
     string GetDeleteModalId(Product prod)
     {
-        return "#deleteModal" + prod.ProductId;
+        return "#deleteModal" + prod.ProductId; // This method generates a unique ID for the delete confirmation modal by concatenating the string "deleteModal" with the product's ID. The resulting string is prefixed with a "#" to indicate that it is an ID selector, which can be used in the data-bs-target attribute of the delete button to trigger the corresponding modal when clicked.
     }
 
     string GetModalId(Product prod)
     {
-        return "deleteModal" + prod.ProductId;
+        return "deleteModal" + prod.ProductId; // This method generates a unique ID for the delete confirmation modal by concatenating the string "deleteModal" with the product's ID. This ID is used in the modal's HTML element to uniquely identify it.
     }
 
 }
 
 <h2>Tequilas Menu Items</h2>
-<a asp-action="AddEdit" asp-controller="Product" class="btn btn-primary">Create New Item</a>
+<a asp-action="AddEdit" asp-controller="Product" class="btn btn-primary">Create New Item</a> @* here we used an ASP.NET Core tag helper on an anchor tag to generate a link. The asp-controller and asp-action attributes direct the user to the AddEdit action method within the Product controller, while the class attribute applies Bootstrap button styling to make it clearly visible as the primary action for adding a new item. *@
 
 <div class="row">
     @foreach (Product prod in Model)
