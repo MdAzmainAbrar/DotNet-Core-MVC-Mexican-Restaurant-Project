@@ -3,85 +3,85 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaxicanResturant.Models
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : class // This is a generic repository class that implements the IRepository<T> interface. It provides basic CRUD (Create, Read, Update, Delete) operations for entities of type T. The class uses Entity Framework Core to interact with the database, allowing you to perform database operations in a consistent and reusable way. By using a generic repository pattern, you can abstract away the data access logic and provide a clean interface for working with different types of entities in your application.
     {
-        protected ApplicationDbContext _context { get; set; }
-        private DbSet<T> _dbSet { get; set; }
+        protected ApplicationDbContext _context { get; set; } // This is a protected property that holds an instance of the ApplicationDbContext, which is the Entity Framework Core context used to interact with the database. The context provides access to the database and allows you to perform operations such as querying, adding, updating, and deleting entities. By making this property protected, it can be accessed by derived classes that inherit from the Repository<T> class, allowing them to utilize the context for their specific data access needs while still maintaining encapsulation and separation of concerns.
+        private DbSet<T> _dbSet { get; set; } // This is a private property that holds a DbSet<T> instance, which represents a collection of entities of type T in the database. The DbSet<T> provides methods for querying and manipulating the entities, such as adding new entities, updating existing ones, and deleting entities from the database. By using a DbSet<T>, you can perform operations on the specific type of entity that the repository is designed to manage, allowing for efficient data access and manipulation within the context of the repository pattern.
 
-        public Repository(ApplicationDbContext context)
+        public Repository(ApplicationDbContext context) // This is the constructor for the Repository<T> class. It takes an instance of ApplicationDbContext as a parameter and initializes the _context property with it. Additionally, it initializes the _dbSet property by calling the Set<T>() method on the context, which returns a DbSet<T> that corresponds to the type of entity T being managed by the repository. This setup allows the repository to perform database operations on the specific type of entity it is designed to handle, providing a way to interact with the database through the context and manage entities of type T effectively.
         {
             _context = context;
-            _dbSet = context.Set<T>();
+            _dbSet = context.Set<T>(); // This line initializes the _dbSet property by calling the Set<T>() method on the ApplicationDbContext instance. The Set<T>() method returns a DbSet<T> that corresponds to the type of entity T being managed by the repository. This allows the repository to perform database operations on the specific type of entity it is designed to handle, providing a way to interact with the database through the context and manage entities of type T effectively.
         }
 
-        public async Task AddAsync(T entity)
+        public async Task AddAsync(T entity) // This method adds a new entity of type T to the database asynchronously. It takes an entity as a parameter, adds it to the DbSet<T> using the AddAsync method, and then saves the changes to the database by calling SaveChangesAsync on the context. This allows you to create new records in the database for the specified entity type while ensuring that the operation is performed asynchronously, improving performance and responsiveness in scenarios where database operations may take time to complete.
         {
-            await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            await _dbSet.AddAsync(entity); // This line adds the provided entity to the DbSet<T> asynchronously. The AddAsync method is used to add the entity to the context's tracking, which prepares it for insertion into the database when SaveChangesAsync is called. By using AddAsync, you can ensure that the operation is performed without blocking the calling thread, allowing for better performance and responsiveness in scenarios where database operations may take time to complete.
+            await _context.SaveChangesAsync(); // This line saves the changes made to the context to the database asynchronously. After adding the entity to the DbSet<T>, calling SaveChangesAsync commits the changes to the database, ensuring that the new record is persisted. By using SaveChangesAsync, you can perform this operation without blocking the calling thread, allowing for better performance and responsiveness in scenarios where database operations may take time to complete.
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id) // This method deletes an entity of type T from the database asynchronously based on its primary key (id). It first retrieves the entity using the FindAsync method, then removes it from the DbSet<T> and saves the changes to the database by calling SaveChangesAsync on the context. This allows you to delete records from the database for the specified entity type while ensuring that the operation is performed asynchronously, improving performance and responsiveness in scenarios where database operations may take time to complete.
         {
-            T entity = await _dbSet.FindAsync(id);
-            _dbSet.Remove(entity);
-            await _context.SaveChangesAsync();
+            T entity = await _dbSet.FindAsync(id); // This line retrieves the entity of type T from the DbSet<T> based on the provided primary key (id) asynchronously. The FindAsync method is used to find the entity in the database, and it returns the entity if found or null if it does not exist. By using FindAsync, you can perform this operation without blocking the calling thread, allowing for better performance and responsiveness in scenarios where database operations may take time to complete.
+            _dbSet.Remove(entity); // This line removes the retrieved entity from the DbSet<T>. The Remove method marks the entity for deletion in the context, and when SaveChangesAsync is called, the entity will be deleted from the database. This allows you to delete records from the database for the specified entity type while ensuring that the operation is performed asynchronously, improving performance and responsiveness in scenarios where database operations may take time to complete.
+            await _context.SaveChangesAsync(); // This line saves the changes made to the context to the database asynchronously. After marking the entity for deletion, calling SaveChangesAsync commits the changes to the database, ensuring that the record is removed. By using SaveChangesAsync, you can perform this operation without blocking the calling thread, allowing for better performance and responsiveness in scenarios where database operations may take time to complete.
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync() // This method retrieves all entities of type T from the database asynchronously. It uses the ToListAsync method on the DbSet<T> to execute the query and return a list of entities. This allows you to fetch all records for the specified entity type while ensuring that the operation is performed asynchronously, improving performance and responsiveness in scenarios where database operations may take time to complete.
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.ToListAsync(); // This line executes the query on the DbSet<T> and returns a list of all entities of type T from the database asynchronously. The ToListAsync method is used to execute the query and retrieve the results as a list, allowing you to fetch all records for the specified entity type while ensuring that the operation is performed without blocking the calling thread, improving performance and responsiveness in scenarios where database operations may take time to complete.
         }
 
-        public async Task<T> GetByIdAsync(int id, QueryOptions<T> options)
+        public async Task<T> GetByIdAsync(int id, QueryOptions<T> options) // This method retrieves a single entity of type T from the database asynchronously based on its primary key (id) and additional query options. It constructs a query using the provided QueryOptions<T> to apply filtering, ordering, and including related entities as needed. The method then executes the query and returns the first matching entity or null if no entity is found. This allows you to fetch a specific record for the specified entity type while ensuring that the operation is performed asynchronously, improving performance and responsiveness in scenarios where database operations may take time to complete.
         {
-            IQueryable<T> query = _dbSet;
-            if (options.HasWhere)
+            IQueryable<T> query = _dbSet; // This line initializes an IQueryable<T> variable named query with the DbSet<T>. This allows you to build a query that can be modified based on the provided QueryOptions<T>, enabling you to apply filtering, ordering, and including related entities as needed before executing the query to retrieve the desired entity from the database.
+            if (options.HasWhere) // This line checks if the provided QueryOptions<T> has a where clause defined. If it does, it applies the where clause to the query using the Where method, allowing you to filter the results based on specific conditions defined in the QueryOptions<T>. This enables you to retrieve a specific subset of entities that match the criteria specified in the where clause while building the query dynamically based on the options provided.
             {
-                query = query.Where(options.Where);
+                query = query.Where(options.Where);    // This line applies the where clause defined in the QueryOptions<T> to the query using the Where method. It modifies the query to include the filtering conditions specified in the options, allowing you to retrieve a specific subset of entities that match those conditions when the query is executed. This dynamic application of the where clause enables you to customize the query based on the provided options, making it flexible and adaptable to different scenarios.
             }
-            if (options.HasOrderBy)
+            if (options.HasOrderBy) // This line checks if the provided QueryOptions<T> has an order by clause defined. If it does, it applies the order by clause to the query using the OrderBy method, allowing you to sort the results based on specific criteria defined in the QueryOptions<T>. This enables you to retrieve entities in a specific order when executing the query, providing flexibility in how the results are organized based on the options provided.
             {
-                query = query.OrderBy(options.OrderBy);
+                query = query.OrderBy(options.OrderBy); // This line applies the order by clause defined in the QueryOptions<T> to the query using the OrderBy method. It modifies the query to include the sorting criteria specified in the options, allowing you to retrieve entities in a specific order when the query is executed. This dynamic application of the order by clause enables you to customize the sorting of results based on the provided options, making it flexible and adaptable to different scenarios.
             }
-            foreach (string include in options.GetIncludes())
+            foreach (string include in options.GetIncludes()) // This line iterates through the collection of include strings defined in the QueryOptions<T> using the GetIncludes method. For each include string, it applies the Include method to the query, allowing you to include related entities in the results based on the specified navigation properties. This enables you to retrieve not only the main entity of type T but also its related entities in a single query, providing a more comprehensive result set based on the options provided.
             {
-                query = query.Include(include);
-            }
-
-            var key = _context.Model.FindEntityType(typeof(T)).FindPrimaryKey().Properties.FirstOrDefault();
-            string primaryKeyName = key?.Name;
-            return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, primaryKeyName) == id);
-        }
-
-        public async Task UpdateAsync(T entity)
-        {
-            _context.Update(entity);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<IEnumerable<T>> GetAllByIdAsync<TKey>(TKey id, string propertyName, QueryOptions<T> options)
-        {
-            IQueryable<T> query = _dbSet;
-
-            if (options.HasWhere)
-            {
-                query = query.Where(options.Where);
+                query = query.Include(include); // This line applies the Include method to the query for each include string defined in the QueryOptions<T>. It modifies the query to include related entities based on the specified navigation properties, allowing you to retrieve not only the main entity of type T but also its related entities in a single query. This dynamic application of the Include method enables you to customize the result set based on the provided options, making it flexible and adaptable to different scenarios where related data needs to be included in the results.
             }
 
+            var key = _context.Model.FindEntityType(typeof(T)).FindPrimaryKey().Properties.FirstOrDefault(); // This line retrieves the primary key property of the entity type T from the Entity Framework Core model. It uses the FindEntityType method to get the entity type information for T, then calls FindPrimaryKey to get the primary key definition, and finally accesses the Properties collection to get the first property that represents the primary key. This allows you to dynamically determine the name of the primary key property for the entity type T, which is necessary for constructing a query that filters by the primary key value (id) when retrieving a specific entity from the database.
+            string primaryKeyName = key?.Name; // This line retrieves the name of the primary key property from the key variable, which holds the primary key information for the entity type T. The ?. operator is used to safely access the Name property, ensuring that if the key is null (i.e., if the primary key information could not be found), it will not throw a NullReferenceException and will instead assign null to primaryKeyName. This allows you to handle cases where the primary key information may not be available while still attempting to retrieve the name of the primary key property for use in constructing a query to filter by the primary key value (id).
+            return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, primaryKeyName) == id); // This line executes the query and retrieves the first entity of type T that matches the specified primary key value (id) asynchronously. It uses the FirstOrDefaultAsync method to execute the query and applies a filter using the EF.Property method to compare the value of the primary key property (identified by primaryKeyName) with the provided id. If a matching entity is found, it will be returned; otherwise, null will be returned. This allows you to fetch a specific record for the specified entity type based on its primary key while ensuring that the operation is performed without blocking the calling thread, improving performance and responsiveness in scenarios where database operations may take time to complete.
+        }
 
-            if (options.HasOrderBy)
+        public async Task UpdateAsync(T entity) // This method updates an existing entity of type T in the database asynchronously. It takes an entity as a parameter, updates it in the DbSet<T> using the Update method, and then saves the changes to the database by calling SaveChangesAsync on the context. This allows you to modify existing records in the database for the specified entity type while ensuring that the operation is performed asynchronously, improving performance and responsiveness in scenarios where database operations may take time to complete.
+        {
+            _context.Update(entity); // This line updates the provided entity in the context. The Update method marks the entity as modified in the context, which prepares it for updating in the database when SaveChangesAsync is called. By using Update, you can ensure that the operation is performed without blocking the calling thread, allowing for better performance and responsiveness in scenarios where database operations may take time to complete.
+            await _context.SaveChangesAsync(); // This line saves the changes made to the context to the database asynchronously. After marking the entity as modified, calling SaveChangesAsync commits the changes to the database, ensuring that the record is updated. By using SaveChangesAsync, you can perform this operation without blocking the calling thread, allowing for better performance and responsiveness in scenarios where database operations may take time to complete.
+        }
+
+        public async Task<IEnumerable<T>> GetAllByIdAsync<TKey>(TKey id, string propertyName, QueryOptions<T> options) // This method retrieves a collection of entities of type T from the database asynchronously based on a specified property name and its corresponding value (id), along with additional query options. It constructs a query using the provided QueryOptions<T> to apply filtering, ordering, and including related entities as needed. The method then executes the query and returns a list of matching entities that have the specified property value equal to the provided id. This allows you to fetch records for the specified entity type based on a specific property value while ensuring that the operation is performed asynchronously, improving performance and responsiveness in scenarios where database operations may take time to complete.
+        {
+            IQueryable<T> query = _dbSet; // This line initializes an IQueryable<T> variable named query with the DbSet<T>. This allows you to build a query that can be modified based on the provided QueryOptions<T>, enabling you to apply filtering, ordering, and including related entities as needed before executing the query to retrieve the desired entities from the database.
+
+            if (options.HasWhere) // This line checks if the provided QueryOptions<T> has a where clause defined. If it does, it applies the where clause to the query using the Where method, allowing you to filter the results based on specific conditions defined in the QueryOptions<T>. This enables you to retrieve a specific subset of entities that match the criteria specified in the where clause while building the query dynamically based on the options provided.
             {
-                query = query.OrderBy(options.OrderBy);
+                query = query.Where(options.Where); // This line applies the where clause defined in the QueryOptions<T> to the query using the Where method. It modifies the query to include the filtering conditions specified in the options, allowing you to retrieve a specific subset of entities that match those conditions when the query is executed. This dynamic application of the where clause enables you to customize the query based on the provided options, making it flexible and adaptable to different scenarios.
             }
 
-            foreach (string include in options.GetIncludes())
+
+            if (options.HasOrderBy) // This line checks if the provided QueryOptions<T> has an order by clause defined. If it does, it applies the order by clause to the query using the OrderBy method, allowing you to sort the results based on specific criteria defined in the QueryOptions<T>. This enables you to retrieve entities in a specific order when executing the query, providing flexibility in how the results are organized based on the options provided.
             {
-                query = query.Include(include);
+                query = query.OrderBy(options.OrderBy); // This line applies the order by clause defined in the QueryOptions<T> to the query using the OrderBy method. It modifies the query to include the sorting criteria specified in the options, allowing you to retrieve entities in a specific order when the query is executed. This dynamic application of the order by clause enables you to customize the sorting of results based on the provided options, making it flexible and adaptable to different scenarios where sorting of results is needed.
+            }
+
+            foreach (string include in options.GetIncludes()) // This line iterates through the collection of include strings defined in the QueryOptions<T> using the GetIncludes method. For each include string, it applies the Include method to the query, allowing you to include related entities in the results based on the specified navigation properties. This enables you to retrieve not only the main entities of type T but also their related entities in a single query, providing a more comprehensive result set based on the options provided.
+            {
+                query = query.Include(include); // This line applies the Include method to the query for each include string defined in the QueryOptions<T>. It modifies the query to include related entities based on the specified navigation properties, allowing you to retrieve not only the main entities of type T but also their related entities in a single query. This dynamic application of the Include method enables you to customize the result set based on the provided options, making it flexible and adaptable to different scenarios where related data needs to be included in the results.
             }
             // Filter by the specified property name and id
-            query = query.Where(e => EF.Property<TKey>(e, propertyName).Equals(id));
+            query = query.Where(e => EF.Property<TKey>(e, propertyName).Equals(id)); // This line applies a filter to the query to retrieve entities of type T where the value of the specified property (identified by propertyName) equals the provided id. It uses the EF.Property method to access the value of the property dynamically based on its name, and then compares it to the id using the Equals method. This allows you to fetch records for the specified entity type based on a specific property value while ensuring that the operation is performed without blocking the calling thread, improving performance and responsiveness in scenarios where database operations may take time to complete.
 
-            return await query.ToListAsync();
+            return await query.ToListAsync(); // This line executes the query and retrieves a list of entities of type T that match the specified property value (id) asynchronously. The ToListAsync method is used to execute the query and retrieve the results as a list, allowing you to fetch records for the specified entity type based on a specific property value while ensuring that the operation is performed without blocking the calling thread, improving performance and responsiveness in scenarios where database operations may take time to complete.
 
         }
     }

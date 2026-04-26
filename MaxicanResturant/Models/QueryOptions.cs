@@ -2,22 +2,22 @@
 
 namespace MaxicanResturant.Models
 {
-    public class QueryOptions<T> where T : class
+    public class QueryOptions<T> where T : class // This is a generic class named QueryOptions<T> that provides a way to specify query options for retrieving entities of type T from the database. It allows you to define filtering, sorting, and including related entities in a flexible and reusable manner.
     {
         
-        public Expression<Func<T, Object>> OrderBy { get; set; } = null!;
-        public Expression<Func<T, bool>> Where { get; set; } = null!;
+        public Expression<Func<T, Object>> OrderBy { get; set; } = null!; // This property is an expression that defines the sorting criteria for the query. It takes a lambda expression that specifies how to order the results based on a property of type T. The OrderBy property allows you to specify which property of the entity should be used for sorting the results when retrieving data from the database. By setting this property, you can control the order in which the results are returned based on the specified criteria.
+        public Expression<Func<T, bool>> Where { get; set; } = null!; // This property is an expression that defines the filtering criteria for the query. It takes a lambda expression that specifies a condition to filter the results based on a property of type T. The Where property allows you to specify which entities should be included in the results based on the defined condition when retrieving data from the database. By setting this property, you can control which records are returned based on specific criteria, such as matching a certain value or satisfying a particular condition.
 
-        private string[] includes = Array.Empty<string>();
+        private string[] includes = Array.Empty<string>(); // This private field is an array of strings that holds the names of related entities to include in the query results. It is initialized as an empty array, meaning that by default, no related entities will be included in the query results. The includes field is used to specify which related entities should be loaded along with the main entity when retrieving data from the database, allowing for eager loading of related data to optimize performance and reduce the number of database queries.
 
-        public string Includes
+        public string Includes // This property is a string that allows you to specify the related entities to include in the query results as a comma-separated list. When you set this property, it takes the input string, removes any spaces, and splits it into an array of strings based on the comma delimiter. This allows you to easily specify multiple related entities to include in the query results by providing a simple comma-separated string, which is then processed and stored in the includes array for use when retrieving data from the database.
         {
-            set => includes = value.Replace(" ", "").Split(',');
+            set => includes = value.Replace(" ", "").Split(','); // The setter for the Includes property takes the input string, removes any spaces using the Replace method, and then splits the string into an array of strings based on the comma delimiter using the Split method. This allows you to specify multiple related entities to include in the query results by providing a simple comma-separated string, which is then processed and stored in the includes array for use when retrieving data from the database.
         }
 
-        public string[] GetIncludes() => includes;
+        public string[] GetIncludes() => includes; // This method returns the array of strings that contains the names of related entities to include in the query results. It provides a way to access the includes array, which is populated based on the value set for the Includes property. By calling this method, you can retrieve the list of related entities that should be included when retrieving data from the database, allowing for eager loading of related data to optimize performance and reduce the number of database queries.
 
-        public bool HasWhere => Where != null;
-        public bool HasOrderBy => OrderBy != null;
+        public bool HasWhere => Where != null; // This is a read-only property that returns a boolean value indicating whether the Where property has been set or not. It checks if the Where property is not null, which means that a filtering condition has been defined for the query. If the Where property has a value, HasWhere will return true, indicating that there is a filtering condition to apply when retrieving data from the database. If the Where property is null, HasWhere will return false, indicating that no filtering condition has been defined and all records will be included in the results.
+        public bool HasOrderBy => OrderBy != null; // This is a read-only property that returns a boolean value indicating whether the OrderBy property has been set or not. It checks if the OrderBy property is not null, which means that a sorting criteria has been defined for the query. If the OrderBy property has a value, HasOrderBy will return true, indicating that there is a sorting criteria to apply when retrieving data from the database. If the OrderBy property is null, HasOrderBy will return false, indicating that no sorting criteria has been defined and the results will be returned in their default order.
     }
 }
