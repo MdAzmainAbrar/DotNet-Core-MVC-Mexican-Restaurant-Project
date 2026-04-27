@@ -6,72 +6,72 @@ namespace MaxicanResturant.Controllers
 {
     public class IngredientController : Controller
     {
-        private Repository<Ingredient> ingredients;
+        private Repository<Ingredient> ingredients; // This line declares a private field named ingredients of type Repository<Ingredient>. This field will be used to interact with the data repository for Ingredient entities, allowing the controller to perform CRUD (Create, Read, Update, Delete) operations on the Ingredient data.
 
-        public IngredientController(ApplicationDbContext context)
+        public IngredientController(ApplicationDbContext context) // This is the constructor for the IngredientController class. It takes an ApplicationDbContext object as a parameter, which is typically used to interact with the database. Inside the constructor, a new instance of Repository<Ingredient> is created and assigned to the ingredients field, allowing the controller to use this repository to manage Ingredient entities in the database.
         {
-            ingredients = new Repository<Ingredient>(context);
+            ingredients = new Repository<Ingredient>(context); // This line initializes the ingredients field by creating a new instance of Repository<Ingredient> and passing the provided ApplicationDbContext (context) to its constructor. This setup allows the IngredientController to use the ingredients repository to perform data operations related to Ingredient entities in the database.
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index() // This is an action method named Index that returns a Task<IActionResult>. It is marked as async, indicating that it will perform asynchronous operations. The method retrieves all Ingredient entities from the ingredients repository using the GetAllAsync() method and passes the result to the View() method, which will render the corresponding view with the list of ingredients.
         {
-            return View(await ingredients.GetAllAsync());
+            return View(await ingredients.GetAllAsync()); // This line retrieves all Ingredient entities from the ingredients repository asynchronously using the GetAllAsync() method. The await keyword is used to wait for the asynchronous operation to complete before passing the result to the View() method. The View() method then renders the corresponding view, which will display the list of ingredients to the user.
         }
 
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id) // This is an action method named Details that takes an integer parameter id and returns a Task<IActionResult>. It is marked as async, indicating that it will perform asynchronous operations. The method retrieves a specific Ingredient entity from the ingredients repository using the GetByIdAsync() method, passing the id and a QueryOptions object that includes related entities (ProductIngredients and Product). The retrieved ingredient is then passed to the View() method, which will render the corresponding view with the details of the ingredient.
         {
-            return View(await ingredients.GetByIdAsync(id, new QueryOptions<Ingredient>() { Includes = "ProductIngredients.Product" }));
+            return View(await ingredients.GetByIdAsync(id, new QueryOptions<Ingredient>() { Includes = "ProductIngredients.Product" })); // This line retrieves a specific Ingredient entity from the ingredients repository asynchronously using the GetByIdAsync() method. The method takes two parameters: the id of the ingredient to retrieve and a new instance of QueryOptions<Ingredient> that specifies which related entities to include in the query (in this case, "ProductIngredients.Product"). The await keyword is used to wait for the asynchronous operation to complete before passing the retrieved ingredient to the View() method. The View() method then renders the corresponding view, which will display the details of the ingredient to the user.
         }
 
         //Ingredient/Create
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create() // This is an action method named Create that responds to HTTP GET requests. It returns an IActionResult, which typically represents a view to be rendered. In this case, the method simply returns the View() method, which will render the corresponding view for creating a new ingredient. This view will likely contain a form for the user to input the details of the new ingredient they wish to create.
         {
-            return View();
+            return View(); // This line returns the View() method, which will render the corresponding view for creating a new ingredient. The view will likely contain a form that allows the user to input the details of the new ingredient they want to create. When the user submits the form, it will typically trigger a POST request to the same Create action method, which will handle the creation of the new ingredient in the database.
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IngredientId, Name")] Ingredient ingredient)
+        [ValidateAntiForgeryToken] // This attribute is used to prevent Cross-Site Request Forgery (CSRF) attacks. It ensures that the form submission is coming from the same site and not from a malicious source. When a form is submitted, it includes an anti-forgery token that must match the token generated by the server. If the tokens do not match, the request will be rejected, providing an additional layer of security for the application.
+        public async Task<IActionResult> Create([Bind("IngredientId, Name")] Ingredient ingredient) // This is an action method named Create that responds to HTTP POST requests. It takes an Ingredient object as a parameter, which is bound to the form data submitted by the user. The [Bind] attribute specifies which properties of the Ingredient object should be included in the model binding process (in this case, IngredientId and Name). The method is marked as async, indicating that it will perform asynchronous operations. Inside the method, it checks if the ModelState is valid (i.e., if the submitted data meets the validation requirements). If it is valid, it adds the new ingredient to the ingredients repository asynchronously using the AddAsync() method and then redirects the user to the Index action. If the ModelState is not valid, it returns the same view with the ingredient data, allowing the user to correct any errors.
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid) // This line checks if the ModelState is valid, which means that the data submitted by the user meets all the validation requirements defined for the Ingredient model. If the ModelState is valid, it proceeds to add the new ingredient to the repository. If it is not valid, it will return the same view with the ingredient data, allowing the user to correct any errors before resubmitting the form. This is a common pattern in ASP.NET MVC applications to ensure that only valid data is processed and stored in the database.
             {
-                await ingredients.AddAsync(ingredient);
-                return RedirectToAction("Index");
+                await ingredients.AddAsync(ingredient); // This line adds the new ingredient to the ingredients repository asynchronously using the AddAsync() method. The await keyword is used to wait for the asynchronous operation to complete before proceeding to the next line of code. This allows the application to handle other requests while waiting for the database operation to finish, improving the overall responsiveness of the application.
+                return RedirectToAction("Index"); // This line redirects the user to the Index action of the current controller, typically to display the list of ingredients after a successful creation. This provides a seamless user experience by showing the updated list of ingredients.
             }
-            return View(ingredient);
+            return View(ingredient); // If the ModelState is not valid, this line returns the same view with the ingredient data, allowing the user to correct any errors before resubmitting the form.
         }
 
         //Ingredient/Delete
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id) // This is an action method named Delete that responds to HTTP GET requests. It takes an integer parameter id, which represents the identifier of the ingredient to be deleted. The method is marked as async, indicating that it will perform asynchronous operations. Inside the method, it retrieves the specific Ingredient entity from the ingredients repository using the GetByIdAsync() method, passing the id and a QueryOptions object that includes related entities (ProductIngredients and Product). The retrieved ingredient is then passed to the View() method, which will render the corresponding view with the details of the ingredient to confirm deletion.
         {
-            return View(await ingredients.GetByIdAsync(id, new QueryOptions<Ingredient> { Includes = "ProductIngredients.Product" }));
+            return View(await ingredients.GetByIdAsync(id, new QueryOptions<Ingredient> { Includes = "ProductIngredients.Product" })); // This line retrieves a specific Ingredient entity from the ingredients repository asynchronously using the GetByIdAsync() method. The method takes two parameters: the id of the ingredient to retrieve and a new instance of QueryOptions<Ingredient> that specifies which related entities to include in the query (in this case, "ProductIngredients.Product"). The await keyword is used to wait for the asynchronous operation to complete before passing the retrieved ingredient to the View() method. The View() method then renders the corresponding view, which will display the details of the ingredient and typically ask the user to confirm if they want to delete it.
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Ingredient ingredient)
+        [ValidateAntiForgeryToken] // This attribute is used to prevent Cross-Site Request Forgery (CSRF) attacks. It ensures that the form submission is coming from the same site and not from a malicious source. When a form is submitted, it includes an anti-forgery token that must match the token generated by the server. If the tokens do not match, the request will be rejected, providing an additional layer of security for the application.
+        public async Task<IActionResult> Delete(Ingredient ingredient) // This is an action method named Delete that responds to HTTP POST requests. It takes an Ingredient object as a parameter, which is bound to the form data submitted by the user. The method is marked as async, indicating that it will perform asynchronous operations. Inside the method, it deletes the specified ingredient from the ingredients repository using the DeleteAsync() method, passing the IngredientId. After the deletion is complete, it redirects the user to the Index action to display the updated list of ingredients.
         {
-            await ingredients.DeleteAsync(ingredient.IngredientId);
-            return RedirectToAction("Index");
+            await ingredients.DeleteAsync(ingredient.IngredientId); // This line deletes the specified ingredient from the ingredients repository asynchronously using the DeleteAsync() method. The await keyword is used to wait for the asynchronous operation to complete before proceeding to the next line of code.
+            return RedirectToAction("Index"); // This line redirects the user to the Index action of the current controller, typically to display the list of ingredients after a successful deletion. This provides a seamless user experience by showing the updated list of ingredients.
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id) // This is an action method named Edit that responds to HTTP GET requests. It takes an integer parameter id, which represents the identifier of the ingredient to be edited. The method is marked as async, indicating that it will perform asynchronous operations. Inside the method, it retrieves the specific Ingredient entity from the ingredients repository using the GetByIdAsync() method, passing the id and a QueryOptions object that includes related entities (ProductIngredients and Product). The retrieved ingredient is then passed to the View() method, which will render the corresponding view with the details of the ingredient for editing.
         {
-            return View(await ingredients.GetByIdAsync(id, new QueryOptions<Ingredient> { Includes = "ProductIngredients.Product" }));
+            return View(await ingredients.GetByIdAsync(id, new QueryOptions<Ingredient> { Includes = "ProductIngredients.Product" })); // This line retrieves a specific Ingredient entity from the ingredients repository asynchronously using the GetByIdAsync() method. The method takes two parameters: the id of the ingredient to retrieve and a new instance of QueryOptions<Ingredient> that specifies which related entities to include in the query (in this case, "ProductIngredients.Product"). The await keyword is used to wait for the asynchronous operation to complete before passing the retrieved ingredient to the View() method. The View() method then renders the corresponding view, which will display the details of the ingredient and typically provide a form for the user to edit its properties.
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Ingredient ingredient)
+        public async Task<IActionResult> Edit(Ingredient ingredient) // This is an action method named Edit that responds to HTTP POST requests. It takes an Ingredient object as a parameter, which is bound to the form data submitted by the user. The method is marked as async, indicating that it will perform asynchronous operations. Inside the method, it checks if the ModelState is valid (i.e., if the submitted data meets the validation requirements). If it is valid, it updates the existing ingredient in the ingredients repository asynchronously using the UpdateAsync() method and then redirects the user to the Index action. If the ModelState is not valid, it returns the same view with the ingredient data, allowing the user to correct any errors.
         {
             if (ModelState.IsValid)
             {
-                await ingredients.UpdateAsync(ingredient);
-                return RedirectToAction("Index");
+                await ingredients.UpdateAsync(ingredient); // This line updates the existing ingredient in the ingredients repository asynchronously using the UpdateAsync() method. The await keyword is used to wait for the asynchronous operation to complete before proceeding to the next line of code.
+                return RedirectToAction("Index"); // This line redirects the user to the Index action of the current controller, typically to display the list of ingredients after a successful update. This provides a seamless user experience by showing the updated list of ingredients.
             }
-            return View(ingredient);
+            return View(ingredient); // This line returns the same view with the ingredient data if the ModelState is not valid, allowing the user to correct any errors before resubmitting the form. This is a common pattern in ASP.NET MVC applications to ensure that only valid data is processed and stored in the database.
         }
 
     }
