@@ -3,7 +3,7 @@
 @inject UserManager<ApplicationUser> UserManager // Inject the UserManager to manage user-related operations, such as retrieving user information. the difference between SignInManager and UserManager is that SignInManager is responsible for handling user sign-in and authentication processes, while UserManager is responsible for managing user-related operations, such as creating users, retrieving user information, and managing user roles and claims.
 
 <ul class="navbar-nav">
-    @if (SignInManager.IsSignedIn(User))
+    @if (SignInManager.IsSignedIn(User)) // @if (SignInManager.IsSignedIn(User)) checks if the current user is authenticated (i.e., signed in). If the user is signed in, the code inside the if block will be executed, which typically includes displaying user-specific information or options, such as a greeting with the user's name and a logout button. If the user is not signed in, the else block will be executed, which usually includes options for registering or logging in.
     {
         <li class="nav-item">
             <!--Determine number of cart items saved in session-->
